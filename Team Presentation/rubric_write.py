@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 # Load and Organize Rubric Criteria from Excel
 #-------------------------------------------------------------------------
 path = os.path.dirname(__file__)
-raw_data = pd.read_excel(path+'/rubric_criteria.xlsx')
+raw_data = pd.read_csv(path+'/rubric_criteria.csv')
 
 team_criteria = list(raw_data['Team Criteria'].dropna())
 team_ratings = list(raw_data['Team Ratings'].dropna())
@@ -20,7 +20,7 @@ individual_ratings = list(raw_data['Individual Ratings'].dropna())
 
 # read excel file
 path = os.path.dirname(__file__)
-raw_data = pd.read_excel(path+'/team_membership.xlsx')
+raw_data = pd.read_csv(path+'/team_membership.csv')
 
 # organize by teams into dictionary
 team_membership = {}
@@ -37,8 +37,8 @@ for team in list_teams:
 #-------------------------------------------------------------------------
 path = os.path.dirname(__file__)
 c = canvas.Canvas(filename = path+'/presentation_rubrics.pdf',
-                  bottomup = 0,
-                  pagesize=(612, 792))
+                  bottomup = 0,         # top left is (0,0) coordinate
+                  pagesize=(612, 792))  # 8.5 x 11 in sheet at 72 dpi
 
 # Return page pixel given inch dimensions and 72px/inch
 #-------------------------------------------------------------------------
