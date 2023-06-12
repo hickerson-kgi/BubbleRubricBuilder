@@ -1,0 +1,34 @@
+<Main>:
+    orientation: 'vertical'
+
+    Button:
+        id: BTN_id
+        text: 'Button'
+        size_hint_y: .2
+        on_release: root.tab_test(self.text)
+
+    TextInput:
+        id: text_id
+        size_hint_y: .2
+        text:'text'
+        on_focus: if not self.focus: root.tell_me('2')
+
+    TabbedPanel:
+        id: tabbedpanel_id
+        do_default_tab: False
+       # EXAMPLE
+        TabbedPanelItem:
+            id: A_tabitem
+            text: 'A'
+            Button:
+                id: A_button
+				text: 'Item A'
+                on_press:  root.tab_test(self.text)
+
+        TabbedPanelItem:
+            id: B_tabitem
+            text: 'B'
+            Button:
+                id: B_button
+				text: 'Item B'
+                on_press: root.tab_test(self.text)
