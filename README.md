@@ -17,6 +17,8 @@ From a list of participants and team membership, and a list of criteria, this co
 * Generate PDFs for individual feedback
 * Generate spreadsheet with complete feedback for institutional research
 
+_Note: All students, scores, and teams are fictional_
+
 ## Team 360 Evaluation Rubric
 * Coming soon
 
