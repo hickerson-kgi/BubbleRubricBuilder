@@ -4,7 +4,7 @@ from reportlab.pdfgen import canvas
 # ReportLab https://docs.reportlab.com/reportlab/userguide/ch1_intro/
 
 #-------------------------------------------------------------------------
-# Load and Organize Rubric Criteria from Excel
+# Load and Organize Rubric Criteria from CSV file
 #-------------------------------------------------------------------------
 path = os.path.dirname(__file__)
 raw_data = pd.read_csv(path+'/rubric_criteria.csv')
@@ -15,7 +15,7 @@ individual_criteria = list(raw_data['Individual Criteria'].dropna())
 individual_ratings = list(raw_data['Individual Ratings'].dropna())
 
 #-------------------------------------------------------------------------
-# Load and Organize Team Membership from Excel
+# Load and Organize Team Membership from CSV file
 #-------------------------------------------------------------------------
 
 # read excel file
@@ -55,11 +55,11 @@ def hline(v_position):
 def draw_row(criteria, ratings, v_position):
     c.drawString(in2px(1), in2px(v_position), criteria)
 
-    i = 1
+    i = 0
     for rating in ratings:
         r = in2px(0.1)
-        c.circle(    in2px(0.75*i+4),    in2px(v_position)-r, r, stroke=1, fill=0)
-        c.drawString(in2px(0.75*i+4.25), in2px(v_position), rating[0])
+        c.circle(    in2px(0.5*i+4.75),    in2px(v_position)-r, r, stroke=1, fill=0)
+        c.drawString(in2px(0.5*i+4.9), in2px(v_position), i+1)
         i += 1
 
 # Draw Team Information
@@ -70,7 +70,7 @@ for team in team_membership:
     v_current = 1
 
     # Team Title
-    c.drawString(in2px(1),in2px(v_current),'Team Score: ' + team)
+    c.drawString(in2px(1),in2px(v_current), team)
     hline(v_current+ 0.125)
 
     # Team Scores
@@ -99,8 +99,7 @@ for team in team_membership:
 
         # Individual Name
         v_current += 0.25
-        c.drawString(in2px(1),in2px(v_current),"Individual Score: "+
-                    team + ' - ' + member)
+        c.drawString(in2px(1),in2px(v_current), team + ' - ' + member)
         hline(v_current+ 0.125)
 
         # Individual Scores
