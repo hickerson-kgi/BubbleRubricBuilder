@@ -74,8 +74,26 @@ def get_team_results(image, team_criteria, team_ratings):
 # Get individual data
 #-------------------------------------------------------------------------
 def get_individual_results(image, individual_criteria, individual_ratings):
-    individual_results = {}
 
+    # initialize individual results
+    individual_results = {}
+    
+    # determine individual name
+    individual_name = scan_text(image, in2px(1))
+    individual_name = individual_name[:-1]
+    individual_results['Name'] = individual_name
+
+    # determine criteria scores
+    y = in2px(1.5)
+    for criteria in individual_criteria:
+        selection = scan_bubbles(image, y)
+
+        if selection:
+            individual_results[criteria] = individual_ratings[selection-1]
+
+        y += in2px(0.25)
+
+    return pd.Series(individual_results)
 
 #-------------------------------------------------------------------------
 # Load and Organize Rubric Criteria from CSV file
@@ -115,6 +133,33 @@ for filename in filenames:
 
 results.to_csv(path + '/' + 'rubric results.csv')
 
+
+# #-------------------------------------------------------------------------
+# # Read and return the results of individuals for all the scans in a directory
+# #-------------------------------------------------------------------------
+
+# # location of scanned images
+# path = os.path.dirname(__file__)
+# filenames = ['scan_ahickers_2023-06-13-12-14-58_2.jpeg',
+#              'scan_ahickers_2023-06-13-12-14-58_4.jpeg']
+
+# ind_results = pd.DataFrame()
+
+# i = 1
+# for filename in filenames:
+#     if filename.endswith(".jpeg") or filename.endswith(".jpg"):
+#         # import scanned image
+#         scan = io.imread(path + '/' + filename)
+
+#         # Get team data
+#         current_ind_results = get_individual_results(scan, individual_criteria, individual_ratings)
+#         results = results._append(current_ind_results, ignore_index=True)
+
+#         # save iamge of comments
+#         io.imsave(path + '/' + current_ind_results['Name'] + ' - comment_' + str(i) + '.pdf', scan_team_comments(scan))
+#         i += 1
+
+# ind_results.to_csv(path + '/' + 'rubric individual results.csv')
 
 #-------------------------------------------------------------------------
 # Analyze and plot results
