@@ -1,21 +1,59 @@
 import os
 from skimage import io
+import pytesseract
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pypdf import PdfMerger
 
-# from reportlab.pdfgen import canvas
+# anticipated dpi of scanned image
+dpi = 300
 
-
-# Get the average value of the bubble based on its position in px
+# scan horizontal text based on y-position as bottom of text
 #-------------------------------------------------------------------------
-def get_score(image, x, y):
-    # radius of scanned bubbles in pixels
-    r = 15
-    # [row, col, color]
-    score = np.mean(image[(y-r):(y+r), (x-r):(x+r)])
-    return score
+def scan_text(image, y):
+    y1 = y-50
+    y2 = y+20
+    ocr_text = pytesseract.image_to_string(image[y1:y2, (dpi*1):(dpi*7.5)])
+    return ocr_text
+
+# scan horizontal bubbles based on y-position as bottom of bubbles and text
+#-------------------------------------------------------------------------
+def scan_bubbles(image, y):
+    
+    r = dpi*0.1    # radius of bubble
+    low = 255      # lowest average intensity of bubble
+    selection = 0  # most filled selection (1-4)
+
+    # iterate through possible bubbles
+    for i in range(4):
+        x = dpi*(0.75*i+4)
+        avg = np.mean(image[(y-r/2):(y+3*r/2), (x-r/2):(x+r/2)])
+
+        if (avg < low) and avg < 150:
+            selection = i+1
+            low = avg
+
+    return selection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Get the name of the project with the most filled in bubble

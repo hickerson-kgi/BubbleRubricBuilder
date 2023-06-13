@@ -42,24 +42,24 @@ c = canvas.Canvas(filename = path+'/presentation_rubrics.pdf',
 
 # Return page pixel given inch dimensions and 72px/inch
 #-------------------------------------------------------------------------
-def inch(inches):
+def in2px(inches):
     return int(72*inches)
 
 # Draw a horizontal line at vertical position in inches
 #-------------------------------------------------------------------------
 def hline(v_position):
-    c.line(inch(1), inch(v_position), inch(7.5), inch(v_position))
+    c.line(in2px(1), in2px(v_position), in2px(7.5), in2px(v_position))
 
 # draw a horizontal row for a criteria and ratings
 #-------------------------------------------------------------------------
 def draw_row(criteria, ratings, v_position):
-    c.drawString(inch(1), inch(v_position), criteria)
+    c.drawString(in2px(1), in2px(v_position), criteria)
 
     i = 1
     for rating in ratings:
-        r = inch(0.1)
-        c.circle(    inch(0.75*i+4),    inch(v_position)-r, r, stroke=1, fill=0)
-        c.drawString(inch(0.75*i+4.25), inch(v_position), rating[0])
+        r = in2px(0.1)
+        c.circle(    in2px(0.75*i+4),    in2px(v_position)-r, r, stroke=1, fill=0)
+        c.drawString(in2px(0.75*i+4.25), in2px(v_position), rating[0])
         i += 1
 
 # Draw Team Information
@@ -70,7 +70,7 @@ for team in team_membership:
     v_current = 1
 
     # Team Title
-    c.drawString(inch(1),inch(v_current),'Team Score: ' + team)
+    c.drawString(in2px(1),in2px(v_current),'Team Score: ' + team)
     hline(v_current+ 0.125)
 
     # Team Scores
@@ -80,9 +80,9 @@ for team in team_membership:
         v_current += 0.25
 
     # Team Comments
-    c.rect(inch(1), inch(v_current), inch(6.5), inch(4), stroke=1, fill=0) 
+    c.rect(in2px(1), in2px(v_current), in2px(6.5), in2px(4), stroke=1, fill=0) 
     v_current += 0.25
-    c.drawString(inch(1.125),inch(v_current),'Team Comments')
+    c.drawString(in2px(1.125),in2px(v_current),'Team Comments')
 
     
     # Draw Individual Information
@@ -99,7 +99,7 @@ for team in team_membership:
 
         # Individual Name
         v_current += 0.25
-        c.drawString(inch(1),inch(v_current),"Individual Score: "+
+        c.drawString(in2px(1),in2px(v_current),"Individual Score: "+
                     team + ' - ' + member)
         hline(v_current+ 0.125)
 
@@ -110,9 +110,9 @@ for team in team_membership:
             v_current += 0.25
 
         # Individual Comments
-        c.rect(inch(1), inch(v_current), inch(6.5), inch(1.4), stroke=1, fill=0) 
+        c.rect(in2px(1), in2px(v_current), in2px(6.5), in2px(1.4), stroke=1, fill=0) 
         v_current += 0.25
-        c.drawString(inch(1.125),inch(v_current), member + ' Comments')
+        c.drawString(in2px(1.125),in2px(v_current), member + ' Comments')
         v_current += 1.4
         
     # Finish Current Page
