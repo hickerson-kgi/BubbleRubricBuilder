@@ -74,7 +74,27 @@ def get_team_results(image, team_criteria, team_ratings):
 # Get individual data
 #-------------------------------------------------------------------------
 def get_individual_results(image, individual_criteria, individual_ratings):
+
+    # initialize individual results
     individual_results = {}
+
+    # determine individual name
+    individual_name = scan_text(image, in2px(1.25))
+    individual_name = individual_name[:-1]
+    individual_results['Name'] = individual_name
+
+    # determine criteria scores
+    y = in2px(1.75)
+    for criteria in individual_criteria:
+        selection = scan_bubbles(image, y)
+
+        if selection:
+            individual_results[criteria] = individual_ratings[selection-1]
+
+        y += in2px(0.25)
+
+    return pd.Series(individual_results)
+   
 
 
 #-------------------------------------------------------------------------
