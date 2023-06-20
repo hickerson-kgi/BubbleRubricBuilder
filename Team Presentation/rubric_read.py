@@ -244,6 +244,7 @@ ind_results.to_csv(path + '/results/' + 'rubric individual results.csv')
 #-------------------------------------------------------------------------
 # Analyze and plot results
 #-------------------------------------------------------------------------
+my_cmap = ['firebrick', 'darkorange', 'gold', 'forestgreen', 'cornflowerblue']
 
 teams = list(team_results['Team'].unique())
 
@@ -257,7 +258,7 @@ for team in teams:
     result_counts = result_counts.transpose()
 
     # plot value counts and save
-    result_counts.plot(kind='barh', stacked=True)
+    result_counts.plot(kind='barh', stacked=True, color=my_cmap[2:])
     plt.title(team)
     plt.tight_layout()
     plt.savefig(path + '/scans/' + team + ' - barplot.pdf')
@@ -274,10 +275,12 @@ for individual in individuals:
     result_counts = result_counts.transpose()
 
     # plot value counts and save
-    result_counts.plot(kind='barh', stacked=True)
+    result_counts.plot(kind='barh', stacked=True, color=my_cmap[1:])
     plt.title(individual)
     plt.tight_layout()
     plt.savefig(path + '/scans/' + individual + ' - barplot.pdf')
+
+
 
 #-------------------------------------------------------------------------
 # Combine into PDF
