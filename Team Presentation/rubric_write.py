@@ -67,10 +67,10 @@ def draw_row(criteria, ratings, v_position):
 
 for team in team_membership:
     # Current vertical position on page in inches
-    v_current = 1
+    v_current = 1.125
     
     # Team Title
-    c.drawString(in2px(1),in2px(v_current), team)
+    c.drawString(in2px(1),in2px(v_current), 'Team: '+team)
     print('Team Title', v_current)
     hline(v_current+ 0.125)
 
@@ -92,16 +92,15 @@ for team in team_membership:
     #-------------------------------------------------------------------------
     # New Page
     c.showPage()
-    v_current = 1
+    v_current = 1.125
     
     for member in team_membership[team]:
 
         if v_current > 9.5:
             c.showPage()
-            v_current = 1
+            v_current = 1.125
 
         # Individual Name
-        v_current += 0.25
         c.drawString(in2px(1),in2px(v_current), team + ' - ' + member)
         print('Name', v_current)
         hline(v_current+ 0.125)
@@ -118,7 +117,7 @@ for team in team_membership:
         print('Individual Comments', v_current)
         v_current += 0.25
         c.drawString(in2px(1.125),in2px(v_current), member + ' Comments')
-        v_current += 1.4
+        v_current += 1.5
         
     # Finish Current Page
     c.showPage() 

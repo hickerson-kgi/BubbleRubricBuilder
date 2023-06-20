@@ -17,24 +17,38 @@ def in2px(inches):
 
 # scan horizontal text based on y-position as bottom of text
 #-------------------------------------------------------------------------
-def scan_text(image, y):
-    y1 = y-60
-    y2 = y+30
-    ocr_text = pytesseract.image_to_string( image[y1:y2, in2px(1):in2px(7.5)] )
+def scan_text(image, v_position):
+
+    x1 = in2px(1)
+    x2 = in2px(7.5)
+    y1 = in2px(v_position-0.2)
+    y2 = in2px(v_position+0.1)
+
+    ocr_text = pytesseract.image_to_string( image[y1:y2, x1:x2] )
     return ocr_text
 
 # scan horizontal bubbles based on y-position as bottom of bubbles and text
 #-------------------------------------------------------------------------
-def scan_bubbles(image, y):
+def scan_bubbles(image, v_position):
     
     r = in2px(0.1)    # radius of bubble
     low = 255      # lowest average intensity of bubble
     selection = 0  # most filled selection (1-4)
 
     # iterate through possible bubbles
-    for i in range(4):
+    for i in range(6):
         x = in2px(0.5*i+4.75)
-        avg = np.mean(image[int(y-3*r/2):int(y-r/2), int(x-r/2):int(x+r/2)])
+
+        # Circle center is drawn at
+        # x =     in2px(0.5*i+4.75)
+        # y =     in2px(v_position)-r
+
+        x1 = int(x-r/2)
+        x2 = int(x+r/2)
+        y1 = int(v_position-3*r/2) # up page 3/2r
+        y2 = int(v_position-r/2)   # up page 1/2r
+
+        avg = np.mean(image[y1:y2, x1:x2])
 
         if (avg < low) and avg < 200:
             selection = i+1
@@ -45,7 +59,12 @@ def scan_bubbles(image, y):
 # Get comments
 #-------------------------------------------------------------------------
 def scan_team_comments(image):
-    return image[in2px(3.75):in2px(7.75), in2px(1):in2px(7.5)]
+    x1 = in2px(1)
+    x2 = in2px(7.5)
+    y1 = in2px(3.875)
+    y2 = in2px(3.875+4)
+    
+    return image[y1:y2, x1:x2]
 
 # Get team data
 #-------------------------------------------------------------------------
@@ -56,11 +75,11 @@ def get_team_results(image, team_criteria, team_ratings):
     
     # determine team name
     team_name = scan_text(image, in2px(1))
-    team_name = team_name[:-1]
+    team_name = team_name[6:-1]
     team_results['Team'] = team_name
 
     # determine criteria scores
-    y = in2px(1.5)
+    y = in2px(1.625)
     for criteria in team_criteria:
         selection = scan_bubbles(image, y)
 
@@ -73,18 +92,18 @@ def get_team_results(image, team_criteria, team_ratings):
 
 # Get individual data
 #-------------------------------------------------------------------------
-def get_individual_results(image, individual_criteria, individual_ratings):
+def get_individual_results(image, individual_criteria, individual_ratings, v_position):
 
     # initialize individual results
     individual_results = {}
     
     # determine individual name
-    individual_name = scan_text(image, in2px(1))
+    individual_name = scan_text(image, in2px(v_position))
     individual_name = individual_name[:-1]
     individual_results['Name'] = individual_name
 
     # determine criteria scores
-    y = in2px(1.5)
+    y = in2px(v_position+0.5)
     for criteria in individual_criteria:
         selection = scan_bubbles(image, y)
 
@@ -94,24 +113,6 @@ def get_individual_results(image, individual_criteria, individual_ratings):
         y += in2px(0.25)
 
     return pd.Series(individual_results)
-    # determine individual name
-    individual_name = scan_text(image, in2px(1.25))
-    individual_name = individual_name[:-1]
-    individual_results['Name'] = individual_name
-
-    # determine criteria scores
-    y = in2px(1.75)
-    for criteria in individual_criteria:
-        selection = scan_bubbles(image, y)
-
-        if selection:
-            individual_results[criteria] = individual_ratings[selection-1]
-
-        y += in2px(0.25)
-
-    return pd.Series(individual_results)
-   
-
 
 #-------------------------------------------------------------------------
 # Load and Organize Rubric Criteria from CSV file
@@ -152,32 +153,33 @@ for filename in filenames:
 results.to_csv(path + '/' + 'rubric results.csv')
 
 
-# #-------------------------------------------------------------------------
-# # Read and return the results of individuals for all the scans in a directory
-# #-------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+# Read and return the results of individuals for all the scans in a directory
+#-------------------------------------------------------------------------
 
-# # location of scanned images
-# path = os.path.dirname(__file__)
-# filenames = ['scan_ahickers_2023-06-13-12-14-58_2.jpeg',
-#              'scan_ahickers_2023-06-13-12-14-58_4.jpeg']
+# location of scanned images
+path = os.path.dirname(__file__)
+filenames = ['scan_ahickers_2023-06-13-12-14-58_2.jpeg',
+             'scan_ahickers_2023-06-13-12-14-58_4.jpeg']
 
-# ind_results = pd.DataFrame()
+ind_results = pd.DataFrame()
 
-# i = 1
-# for filename in filenames:
-#     if filename.endswith(".jpeg") or filename.endswith(".jpg"):
-#         # import scanned image
-#         scan = io.imread(path + '/' + filename)
+i = 1
+for filename in filenames:
+    if filename.endswith(".jpeg") or filename.endswith(".jpg"):
+        # import scanned image
+        scan = io.imread(path + '/' + filename)
 
-#         # Get team data
-#         current_ind_results = get_individual_results(scan, individual_criteria, individual_ratings)
-#         results = results._append(current_ind_results, ignore_index=True)
+        # Get individual data
+        for i in range(3):
+            current_ind_results = get_individual_results(scan, individual_criteria, individual_ratings, i*3+1.125)
+            results = results._append(current_ind_results, ignore_index=True)
 
-#         # save iamge of comments
-#         io.imsave(path + '/' + current_ind_results['Name'] + ' - comment_' + str(i) + '.pdf', scan_team_comments(scan))
-#         i += 1
+        # save image of comments
+        io.imsave(path + '/' + current_ind_results['Name'] + ' - comment_' + str(i) + '.pdf', scan_team_comments(scan))
+        i += 1
 
-# ind_results.to_csv(path + '/' + 'rubric individual results.csv')
+ind_results.to_csv(path + '/' + 'rubric individual results.csv')
 
 #-------------------------------------------------------------------------
 # Analyze and plot results
