@@ -141,60 +141,101 @@ individual_ratings = list(raw_data['Individual Ratings'].dropna())
 
 
 #-------------------------------------------------------------------------
-# Read and return the results for all the teams in a directory
+# Read and return the results for all scans in a directory
 #-------------------------------------------------------------------------
-
-# location of scanned images
-path = os.path.dirname(__file__)
-filenames = ['scan_ahickers_2023-06-20-14-08-43_1.jpeg',
-             'scan_ahickers_2023-06-20-14-08-43_4.jpeg']
 
 team_results = pd.DataFrame()
-
-i = 1
-for filename in filenames:
-    if filename.endswith(".jpeg") or filename.endswith(".jpg"):
-        # import scanned image
-        scan = io.imread(path + '/scans/' + filename)
-
-        # Get team data
-        current_team_results = get_team_results(scan, team_criteria, team_ratings)
-        team_results = team_results._append(current_team_results, ignore_index=True)
-
-        # save iamge of comments
-        io.imsave(path + '/scans/' + current_team_results['Team'] + ' - comment_' + str(i) + '.pdf', scan_team_comments(scan))
-        i += 1
-
-team_results.to_csv(path + '/results/' + 'team results.csv')
-
-
-#-------------------------------------------------------------------------
-# Read and return the results of individuals for all the scans in a directory
-#-------------------------------------------------------------------------
-
-# location of scanned images
-path = os.path.dirname(__file__)
-filenames = ['scan_ahickers_2023-06-20-14-08-43_2.jpeg',
-             'scan_ahickers_2023-06-20-14-08-43_3.jpeg']
-
 ind_results = pd.DataFrame()
 
 i = 1
-for filename in filenames:
+j = 1
+
+for filename in os.listdir(path + '/scans/'):
+    
     if filename.endswith(".jpeg") or filename.endswith(".jpg"):
         # import scanned image
         scan = io.imread(path + '/scans/' + filename)
+        first_line = scan_text(scan, 1.125)
 
-        # Get individual data
-        for i in range(3):
-            current_ind_results = get_individual_results(scan, individual_criteria, individual_ratings, i*3+1.125)
-            ind_results = ind_results._append(current_ind_results, ignore_index=True)
+        if 'Team' in first_line:
+            # Get team data
+            current_team_results = get_team_results(scan, team_criteria, team_ratings)
+            team_results = team_results._append(current_team_results, ignore_index=True)
 
-            # save image of comments
-            io.imsave(path + '/scans/' + current_ind_results['Name'] + ' - comment_' + str(i) + '.pdf', scan_individual_comments(scan, i*3+2.375))
-        i += 1
+            # save iamge of comments
+            io.imsave(path + '/scans/' + current_team_results['Team'] + ' - comment_' + str(i) + '.pdf', scan_team_comments(scan))
+            i += 1
 
+        else:
+            
+            # Get individual data
+            for y in range(3):
+                current_ind_results = get_individual_results(scan, individual_criteria, individual_ratings, y*3+1.125)
+                ind_results = ind_results._append(current_ind_results, ignore_index=True)
+
+                # save image of comments
+                io.imsave(path + '/scans/' + current_ind_results['Name'] + ' - comment_' + str(j) + '.pdf', scan_individual_comments(scan, y*3+2.375))
+            j += 1
+
+
+team_results.to_csv(path + '/results/' + 'team results.csv')
 ind_results.to_csv(path + '/results/' + 'rubric individual results.csv')
+
+# #-------------------------------------------------------------------------
+# # Read and return the results for all the teams in a directory
+# #-------------------------------------------------------------------------
+
+# # location of scanned images
+# path = os.path.dirname(__file__)
+# filenames = ['scan_ahickers_2023-06-20-14-08-43_1.jpeg',
+#              'scan_ahickers_2023-06-20-14-08-43_4.jpeg']
+
+# team_results = pd.DataFrame()
+
+# i = 1
+# for filename in filenames:
+#     if filename.endswith(".jpeg") or filename.endswith(".jpg"):
+#         # import scanned image
+#         scan = io.imread(path + '/scans/' + filename)
+
+#         # Get team data
+#         current_team_results = get_team_results(scan, team_criteria, team_ratings)
+#         team_results = team_results._append(current_team_results, ignore_index=True)
+
+#         # save iamge of comments
+#         io.imsave(path + '/scans/' + current_team_results['Team'] + ' - comment_' + str(i) + '.pdf', scan_team_comments(scan))
+#         i += 1
+
+# team_results.to_csv(path + '/results/' + 'team results.csv')
+
+
+# #-------------------------------------------------------------------------
+# # Read and return the results of individuals for all the scans in a directory
+# #-------------------------------------------------------------------------
+
+# # location of scanned images
+# path = os.path.dirname(__file__)
+# filenames = ['scan_ahickers_2023-06-20-14-08-43_2.jpeg',
+#              'scan_ahickers_2023-06-20-14-08-43_3.jpeg']
+
+# ind_results = pd.DataFrame()
+
+# i = 1
+# for filename in filenames:
+#     if filename.endswith(".jpeg") or filename.endswith(".jpg"):
+#         # import scanned image
+#         scan = io.imread(path + '/scans/' + filename)
+
+#         # Get individual data
+#         for i in range(3):
+#             current_ind_results = get_individual_results(scan, individual_criteria, individual_ratings, i*3+1.125)
+#             ind_results = ind_results._append(current_ind_results, ignore_index=True)
+
+#             # save image of comments
+#             io.imsave(path + '/scans/' + current_ind_results['Name'] + ' - comment_' + str(i) + '.pdf', scan_individual_comments(scan, i*3+2.375))
+#         i += 1
+
+# ind_results.to_csv(path + '/results/' + 'rubric individual results.csv')
 
 
 
