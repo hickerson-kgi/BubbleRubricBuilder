@@ -70,20 +70,20 @@ for team in team_membership:
     v_current = 1.125
     
     # Team Title
-    c.drawString(in2px(1),in2px(v_current), 'Team: '+team)
-    print('Team Title', v_current)
+    c.drawString(in2px(1),in2px(v_current), 'Team - '+team)
+    # print('Team Title', v_current)
     hline(v_current+ 0.125)
 
     # Team Scores
     v_current += 0.5
     for criteria in team_criteria:
         draw_row(criteria, team_ratings, v_current)
-        print('Team Criteria', v_current)
+        # print('Team Criteria', v_current)
         v_current += 0.25
 
     # Team Comments
     c.rect(in2px(1), in2px(v_current), in2px(6.5), in2px(4), stroke=1, fill=0) 
-    print('Team Comments', v_current)
+    # print('Team Comments', v_current)
     v_current += 0.25
     c.drawString(in2px(1.125),in2px(v_current),'Team Comments')
 
@@ -102,19 +102,19 @@ for team in team_membership:
 
         # Individual Name
         c.drawString(in2px(1),in2px(v_current), team + ' - ' + member)
-        print('Name', v_current)
+        # print('Name', v_current)
         hline(v_current+ 0.125)
 
         # Individual Scores
         v_current += 0.5
         for criteria in individual_criteria:
             draw_row(criteria, individual_ratings, v_current)
-            print('Individual Criteria', v_current)
+            # print('Individual Criteria', v_current)
             v_current += 0.25
 
         # Individual Comments
         c.rect(in2px(1), in2px(v_current), in2px(6.5), in2px(1.4), stroke=1, fill=0) 
-        print('Individual Comments', v_current)
+        # print('Individual Comments', v_current)
         v_current += 0.25
         c.drawString(in2px(1.125),in2px(v_current), member + ' Comments')
         v_current += 1.5
