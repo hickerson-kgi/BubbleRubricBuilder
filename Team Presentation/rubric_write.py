@@ -58,8 +58,8 @@ def draw_row(criteria, ratings, v_position):
     i = 0
     for rating in ratings:
         r = in2px(0.1)
-        c.circle(    in2px(0.5*i+4.75),    in2px(v_position)-r, r, stroke=1, fill=0)
-        c.drawString(in2px(0.5*i+4.9), in2px(v_position), str(i+1))
+        c.circle(    in2px(0.5*i+5.25),    in2px(v_position)-r, r, stroke=1, fill=0)
+        c.drawString(in2px(0.5*i+5.4), in2px(v_position), str(4-i))
         i += 1
 
 # Draw Team Information
